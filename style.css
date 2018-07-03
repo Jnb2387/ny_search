@@ -1,9 +1,11 @@
 body { margin:0; padding:0; }
 
-#tablepanel{ position:absolute; top:0px; bottom:0; width:35%; right:0; display:none; padding :2px; }
-#map { position: absolute; top:0; bottom:0; width:100%; left:0; }
+#tablepanel{ position:absolute; top:0px; bottom:0; width:35%; right:0; padding :2px; }
+#map { position: absolute; top:0; bottom:0; width:65%; left:0; }
 .geocodersdiv{
     position: relative;
+    left: -15% ;
+
 }
 .geocoder {
     position:absolute;
