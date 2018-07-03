@@ -1,0 +1,380 @@
+{
+    "version": 8,
+    "name": "nystreet",
+    "metadata": {
+        "mapbox:autocomposite": true,
+        "mapbox:type": "template"
+    },
+    "center": [
+        -75.47580821751683,
+        43.65008139070724
+    ],
+    "zoom": 13.203655423922104,
+    "bearing": 0,
+    "pitch": 0,
+    "sources": {
+        "tilehut": {
+            "type": "vector",
+           "tiles": [
+                "https://nylookuptiles.herokuapp.com/nystreets/{z}/{x}/{y}.pbf"
+            ]
+        },
+        "towns": {
+            "type": "vector",
+            "url": "mapbox://bradley2387.8nezwtes"
+        },
+        "nysam": {
+            "type":"vector",
+            "tiles": [
+                "https://nylookuptiles.herokuapp.com/nysam/{z}/{x}/{y}.pbf"
+            ]
+        },
+        "ourny": {
+            "type":"vector",
+            "tiles": [
+                "https://nylookuptiles.herokuapp.com/ourny/{z}/{x}/{y}.pbf"
+            ]
+        },
+        "sat13": {
+            "type":"raster",
+            "tiles": [
+                "https://orthos.dhses.ny.gov/ArcGIS/rest/services/2013/MapServer/tile/{z}/{y}/{x}"
+            ]
+        },
+        "sat14": {
+            "type":"raster",
+            "tiles": [
+                "https://orthos.dhses.ny.gov/ArcGIS/rest/services/2014/MapServer/tile/{z}/{y}/{x}"
+            ]
+        },"sat15": {
+            "type":"raster",
+            "tiles": [
+                "https://orthos.dhses.ny.gov/ArcGIS/rest/services/2015/MapServer/tile/{z}/{y}/{x}"
+            ]
+        },"sat16": {
+            "type":"raster",
+            "tiles": [
+                "https://orthos.dhses.ny.gov/ArcGIS/rest/services/2016/MapServer/tile/{z}/{y}/{x}"
+            ]
+        },"sat17": {
+            "type":"raster",
+            "tiles": [
+                "https://orthos.dhses.ny.gov/ArcGIS/rest/services/2017/MapServer/tile/{z}/{y}/{x}"
+            ]
+        }
+    },
+    "sprite": "mapbox://sprites/jnb2387/cjg2adfyp73pk2rlh74gktrgp",
+    "glyphs": "mapbox://fonts/jnb2387/{fontstack}/{range}.pbf",
+    "layers": [
+        {
+            "id": "background",
+            "type": "background",
+            "paint": {
+                "background-color": "rgba(0,0,0,0)"
+            }
+        },
+        {
+            "id": "sat13",
+            "type": "raster",
+            "source":"sat13",
+            "tileSize": 256,
+            "paint": {}
+        },
+        {
+            "id": "sat14",
+            "type": "raster",
+            "source":"sat14",
+            "tileSize": 256,
+            "paint": {}
+        },
+        {
+            "id": "sat15",
+            "type": "raster",
+            "source":"sat15",
+            "tileSize": 256,
+            "paint": {}
+        },
+        {
+            "id": "sat16",
+            "type": "raster",
+            "source":"sat16",
+            "tileSize": 256,
+            "paint": {}
+        },
+        {
+            "id": "sat17",
+            "type": "raster",
+            "source":"sat17",
+            "tileSize": 256,
+            "paint": {}
+        },
+        {
+            "id": "streets",
+            "type": "line",
+            "source": "tilehut",
+            "source-layer": "nystreets",
+            "minzoom": 9,
+            "filter": [
+                "==",
+                "$type",
+                "LineString"
+            ],
+            "layout": {
+                "visibility": "visible",
+                "line-cap": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            "round"
+                        ],
+                        [
+                            12,
+                            "butt"
+                        ]
+                    ]
+                },
+                "line-join": "round"
+            },
+            "paint": {
+                "line-color": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            8,
+                            "hsl(0, 0%, 96%)"
+                        ],
+                        [
+                            10,
+                            "hsl(0, 2%, 83%)"
+                        ]
+                    ]
+                },
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            6,
+                            0.25
+                        ],
+                        [
+                            8,
+                            0.6
+                        ],
+                        [
+                            14,
+                            1
+                        ],
+                        [
+                            16,
+                            1
+                        ]
+                    ]
+                },
+                "line-width": {
+                    "base": 1.5,
+                    "stops": [
+                        [
+                            5,
+                            0.5
+                        ],
+                        [
+                            12,
+                            1.75
+                        ],
+                        [
+                            18,
+                            1
+                        ]
+                    ]
+                }
+            }
+        },
+        {
+            "id": "nysampoint",
+            "type": "circle",
+            "source": "nysam",
+            "source-layer": "nysam2",
+            "paint": {
+                "circle-radius": {
+                    "base": 1,
+                    "stops": [
+                        [13, 1],
+                        [14, 2],
+                        [22, 8]
+                    ]
+                },
+                "circle-color": "blue"
+            }
+        }, {
+            "id": "streetlabels",
+            "type": "symbol",
+            "source": "tilehut",
+            "source-layer": "nystreets",
+            "minzoom": 9,
+            "filter": [
+                "!in",
+                "Label",
+                ""
+            ],
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{Label}",
+                "text-font": [
+                    "DIN Offc Pro Bold",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            9,
+                            10
+                        ],
+                        [
+                            20,
+                            16
+                        ]
+                    ]
+                },
+                "symbol-placement": "line",
+                "text-max-angle": 30,
+                "text-rotation-alignment": "map",
+                "text-padding": 1
+            },
+            "paint": {
+                "text-color": "#fff",
+                "text-halo-color": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            8,
+                            "hsl(0, 1%, 10%)"
+                        ],
+                        [
+                            16,
+                            "hsl(0, 2%, 16%)"
+                        ]
+                    ]
+                },
+                "text-halo-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            14,
+                            1.25
+                        ],
+                        [
+                            15,
+                            1.5
+                        ]
+                    ]
+                }
+            }
+        },{
+            "id": "nyaddresscenter",
+            "type": "circle",
+            "source": "ourny",
+            "source-layer": "ourny",
+            "paint": {
+                "circle-radius": {
+                    "base": 1,
+                    "stops": [
+                        [13, 1],
+                        [14, 2],
+                        [22, 8]
+                    ]
+                },
+                "circle-color": "yellow"
+            }
+        },{
+            "id": "nysamlabels",
+            "type": "symbol",
+            "source": "nysam",
+            "source-layer": "nysam2",
+            "minzoom": 14.99,
+            "layout": {
+                    "text-field": "{AddressLabel}, \n {CityTownName}",
+                    "text-size": 12,
+                    "symbol-spacing": 500000,
+                    "text-font": [
+                        "DIN Offc Pro Bold",
+                        "Arial Unicode MS Regular"
+                    ],
+                    "text-anchor": "center",
+                    "text-justify": "center"
+        
+                },
+                "paint": {
+                    "text-color": "white",
+                    "text-halo-color": "black",
+                    "text-halo-width": 1
+                }
+            },
+             {
+                "id": "nyaddresscenterlabels",
+                "type": "symbol",
+                "source": "ourny",
+                "source-layer": "ourny",
+                "minzoom": 14.99,
+                "layout": {
+                        "text-field": "{STREETNUM} {STREETNAME}, \n {CITY}",
+                        "text-size": 12,
+                        "symbol-spacing": 500000,
+                        "text-font": [
+                            "DIN Offc Pro Bold",
+                            "Arial Unicode MS Regular"
+                        ],
+                        "text-anchor": "center",
+                        "text-justify": "center"
+            
+                    },
+                    "paint": {
+                        "text-color": "white",
+                        "text-halo-color": "black",
+                        "text-halo-width": 1
+                    }
+                },
+                {
+                    "id":"towns",
+                    "source": "towns",
+                    "type":"fill",
+                    "source-layer": "Cities_Towns-cpmcko",
+                    "layout": {
+                        "visibility": "none"    
+                    },
+                    "paint": {
+                        "fill-color": "red",
+                        "fill-opacity": 0.5,
+                        "fill-outline-color": "white"
+                    }
+                },
+                {
+                    "id": "townslabel",
+                    "type": "symbol",
+                    "source": "towns",
+                    "source-layer": "Cities_Towns-cpmcko",
+                    "layout": {
+                        "visibility": "none",
+                        "text-field": "{NAME}",
+                        "text-font": [
+                            "Alegreya Bold",
+                            "Arial Unicode MS Regular"
+                        ],
+                        "text-size": 16
+                    },
+                    "paint": {
+                        "text-color": "hsl(0, 86%, 80%)",
+                        "text-halo-color": "hsl(230, 92%, 27%)",
+                        "text-halo-width": 1,
+                        "text-halo-blur": 1
+                    }
+                }
+    ],
+    "created": "2018-04-16T13:39:51.508Z",
+    "id": "cjg2adfyp73pk2rlh74gktrgp",
+    "modified": "2018-04-16T14:26:37.385Z",
+    "owner": "jnb2387",
+    "visibility": "private",
+    "draft": false
+}
