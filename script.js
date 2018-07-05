@@ -1,7 +1,7 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoiam5iMjM4NyIsImEiOiJjamZ4MWM3MmYwdnRlMzNuMTdybjNiMGZkIn0.XNRMd-IS-iN1yiSPaOY-Cg';
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/jnb2387/cjiwfye5d1ls82rpmkrjsnac8',
+    style: 'mapbox://styles/jnb2387/cjiwfye5d1ls82rpmkrjsnac8?optimize=true',
     zoom: 6,
     center: [-76.249, 42.958],
     hash: true,
@@ -37,8 +37,8 @@ function updateGeocoderProximity() {
     }
 }
 
-// Disable default box zooming.
-map.boxZoom.disable();
+// // Disable default box zooming.
+// map.boxZoom.disable();
 
 // Create a popup, but don't add it to the map yet.
 var popup = new mapboxgl.Popup({
@@ -108,6 +108,45 @@ map.on('load', function () {
         } //REMOVE ANY POPUPS ON MAP
 
         map.getSource('single-point').setData(ev.result.geometry);
+    });
+  
+    map.addLayer({
+        "id": "state-fills",
+        "type": "fill",
+        "source": "composite",
+        "source-layer":"ny_zips-4vg7jg",
+        "paint": {
+            "fill-color": "#627BC1",
+            "fill-opacity": ["case",
+                ["boolean", ["feature-state", "hover"], false],
+                1,
+                0.5
+            ]
+        }
+    });
+    console.log(map.style.sourceCaches);
+    var hoveredStateId =  null;
+
+     // When the user moves their mouse over the states-fill layer, we'll update the 
+    // feature state for the feature under the mouse.
+    map.on("mousemove", "state-fills", function(e) {
+        console.log(map.getFeatureState({source: 'composite', sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}))
+
+        if (e.features.length > 0) {
+            if (hoveredStateId) {
+                map.setFeatureState({source: 'composite',sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: false});
+            }
+            hoveredStateId = e.features[0].id;
+            map.setFeatureState({source: 'composite', sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: true});
+        }
+    });
+
+    // Reset the state-fills-hover layer's filter when the mouse leaves the layer.
+    map.on("mouseleave", "state-fills", function() {
+        if (hoveredStateId) {
+            map.setFeatureState({source: 'composite',sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: false});
+        }
+        hoveredStateId =  null;
     });
 
 }); // END MAP LOAD
