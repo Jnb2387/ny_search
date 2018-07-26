@@ -161,9 +161,7 @@ body { margin:0; padding:0; }
 .nygeocoder input[type='text'] {
     width:70%;
     font-size: 14px;
-    /*border: 1px;
-    borde*/r-color: grey
-    height: 30px;
+    height: 33px;
     margin:10px 0 0 0;
     color: rgba(0,0,0,.5);
     /*padding: 10px 10px 10px 40px;*/

@@ -20,7 +20,7 @@ var coords;
 var popup; // SO WE CAN GRAB THE POPUP FROM ANYWHERE
 var datatable;
 var dataArr = [];
-
+var latlonpopup;
 
 map.on('load', updateGeocoderProximity); // set proximity on map load
 map.on('moveend', updateGeocoderProximity); // and then update proximity each time the map moves
@@ -52,7 +52,6 @@ map.on('load', function () {
         $('#listings').hide();
         if (map.getZoom() > 14) {
             var features = map.queryRenderedFeatures({ layers: ['NY_Street'] });
-            console.log(features)
             latlonpopup = new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
                 .setHTML(e.lngLat.lng + " <button id='lng' class='copybtn'>Copy</button><br>" + e.lngLat.lat + " <button class='copybtn' id='lat'>Copy</button>")
@@ -110,44 +109,6 @@ map.on('load', function () {
         map.getSource('single-point').setData(ev.result.geometry);
     });
   
-    map.addLayer({
-        "id": "state-fills",
-        "type": "fill",
-        "source": "composite",
-        "source-layer":"ny_zips-4vg7jg",
-        "paint": {
-            "fill-color": "#627BC1",
-            "fill-opacity": ["case",
-                ["boolean", ["feature-state", "hover"], false],
-                1,
-                0.5
-            ]
-        }
-    });
-    console.log(map.style.sourceCaches);
-    var hoveredStateId =  null;
-
-     // When the user moves their mouse over the states-fill layer, we'll update the 
-    // feature state for the feature under the mouse.
-    map.on("mousemove", "state-fills", function(e) {
-        console.log(map.getFeatureState({source: 'composite', sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}))
-
-        if (e.features.length > 0) {
-            if (hoveredStateId) {
-                map.setFeatureState({source: 'composite',sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: false});
-            }
-            hoveredStateId = e.features[0].id;
-            map.setFeatureState({source: 'composite', sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: true});
-        }
-    });
-
-    // Reset the state-fills-hover layer's filter when the mouse leaves the layer.
-    map.on("mouseleave", "state-fills", function() {
-        if (hoveredStateId) {
-            map.setFeatureState({source: 'composite',sourceLayer:"ny_zips-4vg7jg", id: hoveredStateId}, { hover: false});
-        }
-        hoveredStateId =  null;
-    });
 
 }); // END MAP LOAD
 
@@ -179,11 +140,12 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
 
         if (visibility === 'visible') {
             if (clickedLayer == 'County') {
-                map.setLayoutProperty('county_outline', 'visibility', 'none');
+                map.setLayoutProperty('County', 'visibility', 'none');
                 map.setLayoutProperty('county_labels', 'visibility', 'none');
             }
             if (clickedLayer == 'NY-Zipcodes') {
                 map.setLayoutProperty('ny-zips_label', 'visibility', 'none');
+                map.setLayoutProperty('ny-zips_outline', 'visibility', 'none');
             } 
             if (clickedLayer == 'NY-Addresses') {
                 map.setLayoutProperty('ny-add_label', 'visibility', 'none');
@@ -192,11 +154,13 @@ for (var i = 0; i < toggleableLayerIds.length; i++) {
             this.className = '';
         } else {
             if (clickedLayer == 'County') {
-                map.setLayoutProperty('county_outline', 'visibility', 'visible');
+                map.setLayoutProperty('County', 'visibility', 'visible');
                 map.setLayoutProperty('county_labels', 'visibility', 'visible');
             }
             if (clickedLayer == 'NY-Zipcodes') {
                 map.setLayoutProperty('ny-zips_label', 'visibility', 'visible');
+                map.setLayoutProperty('ny-zips_outline', 'visibility', 'visible');
+
             }
             if (clickedLayer == 'NY-Addresses') {
                 map.setLayoutProperty('ny-add_label', 'visibility', 'visible');
@@ -222,8 +186,9 @@ $('#showtable').click(function (e) {
 
 });
 $('#hidetable').click(function (e) {
-    $('#tablepanel').hide();
     $('#map').width('100%')
+    $('#tablepanel').hide();
+    map.resize();
     $('.geocodersdiv').animate({
         'left': "0%" //moves left
     });
