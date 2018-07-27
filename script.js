@@ -54,7 +54,7 @@ map.on('load', function () {
             var features = map.queryRenderedFeatures({ layers: ['NY_Street'] });
             latlonpopup = new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
-                .setHTML(e.lngLat.lng + " <button id='lng' class='copybtn'>Copy</button><br>" + e.lngLat.lat + " <button class='copybtn' id='lat'>Copy</button>")
+                .setHTML(e.lngLat.lng + " <button id='lng' class='copybtn btn round'>Copy Lon</button><br>" + e.lngLat.lat + " <button class='copybtn btn round' id='lat'>Copy Lat</button>")
                 .addTo(map);
             $(document).on('click', '#lng', function () {
                 $('#lat').html("Copy");
@@ -218,14 +218,15 @@ $("#streetbtn").click(function () {
             var json = response.data;
             ny_geocodes.push(json.candidates[0].location.x);
             ny_geocodes.push(json.candidates[0].location.y);
-            $('#streetbtn').html('Find Street Names');
+            $('#streetbtn').html('Find Address');
             $.each(response, function(index, candidates) {
                 dataArr.push(candidates.candidates);
             });
             datatable = $("#table").DataTable({
                 data: dataArr[0],
                 destroy: true,
-                dataSrc: "",
+                select: true,
+                // dataSrc: "",
                 columns: [{
                     data: "address"
                 }
@@ -235,21 +236,29 @@ $("#streetbtn").click(function () {
                 , {
                     data: "attributes.Loc_name"
                 }
-                ],
-                "select": true,
-                
+                ],              
                 autoWidth: false,
-                scrollY: "80vh",
+                "jQueryUI": true,//nothing
+                'table-hover':true,//nothing
+                scrollY: "75vh",
                 scrollX: "100%",
-                "jQueryUI": true,
                 search: {
                     caseInsensitive: true
                 },
                 paging: true,
                 info: true,
-                lengthMenu: [20, 50, 100]
+                lengthMenu: [19, 50, 100]
             });
             datatable.order([1,'desc']).draw() // ORDER THE TABLE BY SCORE
+            
+            $('#table tbody')
+            .on( 'mouseenter', 'td', function () {
+                var colIdx = datatable.cell(this).index().column;
+    
+                // $( datatable.cells().nodes() ).removeClass( 'highlight' );
+                // $( datatable.column( colIdx ).nodes() ).addClass( 'highlight' );
+            } );
+           
             $('#table tbody').on('click', 'tr', function() {
                 var clickedaddress = [];
                 if ($(this).hasClass('selected')) {
@@ -276,8 +285,7 @@ $("#streetbtn").click(function () {
             // flyToStore(ny_geocodes);
             // console.log(map.getFilter('NY-Street'))
         } catch (error) {
-            $('#streetbtn').html('Find Street Names');
-            // alert(error);
+            $('#streetbtn').html('Find Address');
             $('#table tbody').html('No Address Found, Try Adding Zipcode or NY')
         }
     }
